@@ -1,21 +1,8 @@
-{
-  "name": "angular-gulp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abigaleypc/angular-gulp.git"
-  },
-  "author": "Abigale",
-  "homepage": "https://github.com/abigaleypc/angular-gulp#readme",
-  "dependencies": {
-    "angular": "^1.3.12"
-  },
-  "devDependencies": {
+### 引入库介绍
+
+* angular 前端框架，支持整个开发进程，提供 Web 应用的架构，无需进行手工 DOM 操作
+* todomvc-app-css
+    "todomvc-common": "^1.0.0"
     "angular-mocks": "^1.3.12",
     "angular-route": "^1.3.12",
     "browserify": "^9.0.7",
@@ -37,5 +24,3 @@
     "jasmine-core": "^2.2.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
-  }
-}
