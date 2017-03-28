@@ -1,4 +1,3 @@
-const angular = require('angular')
 
 class AppCtrl {
   constructor() {
