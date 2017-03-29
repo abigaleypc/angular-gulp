@@ -52,7 +52,7 @@ gulp.task('watch', () => {
     gulp.watch(['./app/**/*.js'], ['script']);
     gulp.watch(['./app/**/*.less'], ['style']);
 });
-
+ 
 gulp.task('default', ['clean', 'style', 'script', 'htmlmin', 'serve'], () => {
     gulp.start('watch');
 });
