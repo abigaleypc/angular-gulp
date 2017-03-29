@@ -1,53 +1,58 @@
-var gulp = require('gulp');
-var minify = require('gulp-minify');
-var clean = require('gulp-clean');
-var concat = require('gulp-concat');
-// var webserver = require('gulp-webserver');
-const path = require('path');
+const gulp = require('gulp');
+const rimraf = require('rimraf');
 const babel = require('gulp-babel');
-const browserSync = require('browser-sync').create();
+const sourcemaps = require('gulp-sourcemaps');
+const less = require('gulp-less');
+const uglify = require('gulp-uglify');
+const htmlmin = require('gulp-htmlmin');
+const browserSync = require('browser-sync').create();
 
-var server = {
-  host: 'localhost',
-  port: '8001'
-}
-
-gulp.task('default', ['clean'],function() {
-  gulp.start(['build', 'browser-sync', 'watch']);
-  // 将你的默认的任务代码放在这
-
+gulp.task('clean', cb => {
+    rimraf('./build', cb);
 });
 
-gulp.task('clean', function () {
-    return gulp.src('build', {read: false})
-        .pipe(clean());
-});
-
-gulp.task('build',['html','js'],function() {
-});
-
-
-gulp.task('html',function() {
-    gulp.src('app/*.html') // 匹配 'app/index.html' 并且将 `base` 解析为 `app`
-    .pipe(minify())
-    .pipe(gulp.dest(path.join(__dirname, 'build')));  // 写入 'build/index.html'
-});
-
-gulp.task('js',function() {
-    gulp.src('app/*.js')
-        .pipe(babel({
-            presets: ['es2015']
+gulp.task('htmlmin', () => {
+    gulp.src('./app/index.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true
         }))
-        .pipe(gulp.dest(path.join(__dirname, 'build')));
+        .pipe(gulp.dest('./build'));
 });
 
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        server: {
-            baseDir: "./build"
-        }
-    });
+gulp.task('script', () => {
+    gulp.src(['./app/*.js', './app/**/*.js'])
+        .pipe(babel({
+            presets: ['es2015', 'stage-0']
+        }))
+        // .pipe(uglify()) // 生产模式
+        .pipe(sourcemaps.write('.'))    // 开发模式
+        .pipe(gulp.dest('./build/js'))
+        .pipe(browserSync.stream());
 });
 
-gulp.task('watch', function(){
+gulp.task('style', () => {
+    gulp.src(['./app/*.less', './app/**/*.less'])
+        .pipe(less())
+        .pipe(gulp.dest('./build/css'))
+        .pipe(browserSync.stream());
+});
+
+gulp.task('serve', () => {
+    browserSync.init({
+        server: {
+            baseDir: '.'
+        }
+    });
+
+    gulp.watch(['./app/index.html']).on('change', browserSync.reload);
+});
+
+gulp.task('watch', () => {
+    gulp.watch(['./app/index.html'], ['htmlmin']);
+    gulp.watch(['./app/**/*.js'], ['script']);
+    gulp.watch(['./app/**/*.less'], ['style']);
+});
+
+gulp.task('default', ['clean', 'style', 'script', 'htmlmin', 'serve'], () => {
+    gulp.start('watch');
 });
